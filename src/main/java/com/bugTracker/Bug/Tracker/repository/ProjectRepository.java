@@ -1,6 +1,7 @@
 package com.bugTracker.Bug.Tracker.repository;
 
 import com.bugTracker.Bug.Tracker.entity.Project;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,8 @@ public interface ProjectRepository extends MongoRepository<Project, String> {
 
     @Query(value = "{'title':?0, 'status':{$ne:5}}")
     Project getProjectIdByName(String name);
+
+    @Query(value = "{'status':{$ne:5},'users':{$elemMatch:{'user_id':?0, 'status':{$ne:5}}}}", sort = "{'project_id':-1}")
+    List<Project> getProjects(String userId, Pageable pageable);
+
 }

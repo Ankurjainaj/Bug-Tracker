@@ -1,5 +1,7 @@
 package com.bugTracker.Bug.Tracker.service;
 
+import com.bugTracker.Bug.Tracker.dto.CreateBugDto;
+import com.bugTracker.Bug.Tracker.dto.DeleteBugDto;
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
 import com.bugTracker.Bug.Tracker.entity.Bug;
 import org.springframework.ui.Model;
@@ -11,5 +13,13 @@ public interface BugService {
 
     String bugForProject(Model model, Principal principal, String projectid);
 
-    ResponseModel addBug(Bug bug, Principal principal);
+    ResponseModel addBug(CreateBugDto bug, Principal principal);
+
+    ResponseModel getBugById(String bugId, Model model, Principal principal);
+
+    ResponseModel editBugForm(String bugId, Model model, Principal principal);
+
+    ResponseModel editBug(CreateBugDto bug, Principal principal);
+
+    ResponseModel deleteBug(DeleteBugDto bug);
 }

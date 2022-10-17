@@ -27,6 +27,8 @@ public class Bug {
     private Integer status;
     @Field(value = "created_date")
     private String created;
+    @Field(value = "modified_date")
+    private String modifiedDate;
     @Field(value = "project_name")
     private String projectName;
 

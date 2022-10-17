@@ -1,5 +1,7 @@
 package com.bugTracker.Bug.Tracker.service;
 
+import com.bugTracker.Bug.Tracker.dto.CreateBugDto;
+import com.bugTracker.Bug.Tracker.dto.DeleteBugDto;
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
 import com.bugTracker.Bug.Tracker.dto.RolesOfUser;
 import com.bugTracker.Bug.Tracker.entity.Bug;
@@ -12,6 +14,8 @@ import com.bugTracker.Bug.Tracker.repository.UserRepository;
 import com.bugTracker.Bug.Tracker.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -72,7 +76,7 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public ResponseModel addBug(Bug bug, Principal principal) {
+    public ResponseModel addBug(CreateBugDto bug, Principal principal) {
         String currentServerTime = Utils.getCurrentServerTime();
         User sender = userRepository.findByEmail(principal.getName());
         Project project = projectRepository.getProjectIdByName(bug.getProjectName());
@@ -84,8 +88,96 @@ public class BugServiceImpl implements BugService {
         b.setUserId(sender.getId());
         b.setProjectName(bug.getProjectName());
         b.setCreated(currentServerTime);
+        b.setModifiedDate(currentServerTime);
         bugRepository.save(b);
         return ResponseModel.builder().currentServerTime(currentServerTime).status(HttpStatus.OK.value()).message("redirect:/bugs").build();
+    }
+
+    @Override
+    public ResponseModel getBugById(String bugId, Model model, Principal principal) {
+        ResponseModel responseModel = new ResponseModel();
+        responseModel.setCurrentServerTime(Utils.getCurrentServerTime());
+        responseModel.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseModel.setMessage("error");
+        User user = userRepository.findByEmail(principal.getName());
+        try {
+            if (bugRepository.isItTheirBug(bugId, user.getId()) != 0) {
+                Bug bug = bugRepository.getBugById(bugId);
+
+                if (bug != null) {
+                    model.addAttribute("foundBug", bug);
+
+                    model.addAttribute("user", user);
+                    model.addAttribute("isAdmin", isAdmin(user));
+                    model.addAttribute("pageTitle", "Bug #" + bugId + " | Bug Tracker");
+                    model.addAttribute("isUnread", notificationRepository.isThereUnread(user.getId()));
+                    responseModel.setMessage("bug");
+                    responseModel.setStatus(HttpStatus.OK.value());
+                    return responseModel;
+                }
+                return responseModel;
+            }
+        } catch (Exception e) {
+            return responseModel;
+        }
+        return responseModel;
+    }
+
+    @Override
+    public ResponseModel editBugForm(String bugId, Model model, Principal principal) {
+        ResponseModel responseModel = new ResponseModel();
+        responseModel.setCurrentServerTime(Utils.getCurrentServerTime());
+        responseModel.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseModel.setMessage("error");
+        Pageable page = PageRequest.of(0, 5);
+        User user = userRepository.findByEmail(principal.getName());
+        try {
+            if (bugRepository.isItTheirBug(bugId, user.getId()) != 0) {
+                Bug bug = bugRepository.getBugById(bugId);
+
+                if (bug != null) {
+                    model.addAttribute("bug", bug);
+                    model.addAttribute("user", user);
+                    model.addAttribute("isAdmin", isAdmin(user));
+                    model.addAttribute("pageTitle", "Bug #" + bugId + " | Bug Tracker");
+                    model.addAttribute("projects", projectRepository.getProjects(user.getId(), page));
+                    model.addAttribute("isUnread", notificationRepository.isThereUnread(user.getId()));
+                    responseModel.setStatus(HttpStatus.OK.value());
+                    responseModel.setMessage("editBug");
+                    return responseModel;
+                }
+                return responseModel;
+            }
+        } catch (Exception e) {
+            return responseModel;
+        }
+        return responseModel;
+    }
+
+    @Override
+    public ResponseModel editBug(CreateBugDto bug, Principal principal) {
+        String currentServerTime = Utils.getCurrentServerTime();
+        if (bug.getBugId() == null || bug.getBugId().isBlank())
+            return ResponseModel.builder().currentServerTime(currentServerTime).status(HttpStatus.BAD_REQUEST.value()).message("error").build();
+
+        Project project = projectRepository.getProjectIdByName(bug.getProjectName());
+        Bug b = bugRepository.getBugById(bug.getBugId());
+        b.setDescription(bug.getDescription());
+        b.setStatus(bug.getStatus());
+        b.setTitle(bug.getTitle());
+        b.setProjectId(project.getProjectId());
+        b.setModifiedDate(currentServerTime);
+        bugRepository.save(b);
+        return ResponseModel.builder().currentServerTime(currentServerTime).status(HttpStatus.OK.value()).message("redirect:/bug/" + bug.getBugId()).build();
+    }
+
+    @Override
+    public ResponseModel deleteBug(DeleteBugDto bug) {
+
+        Bug b = bugRepository.getBugById(bug.getBugId());
+        b.setStatus(5);
+        bugRepository.save(b);
+        return ResponseModel.builder().message("redirect:/bugs").status(HttpStatus.OK.value()).currentServerTime(Utils.getCurrentServerTime()).build();
     }
 
     public boolean isAdmin(User loggedUser) {
