@@ -2,6 +2,7 @@ package com.bugTracker.Bug.Tracker.service;
 
 import com.bugTracker.Bug.Tracker.entity.User;
 import com.bugTracker.Bug.Tracker.repository.UserRepository;
+import com.bugTracker.Bug.Tracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,4 +30,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new UserDetailsImpl(user);
     }
 
+    @Override
+    public void updateLastLoginDate(String userId) {
+        User u = userRepository.findByUserId(userId);
+        u.setLastLogin(Utils.getCurrentServerTime());
+        userRepository.save(u);
+    }
 }

@@ -3,10 +3,10 @@ package com.bugTracker.Bug.Tracker.service;
 import com.bugTracker.Bug.Tracker.dto.CreateBugDto;
 import com.bugTracker.Bug.Tracker.dto.DeleteBugDto;
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
-import com.bugTracker.Bug.Tracker.dto.RolesOfUser;
 import com.bugTracker.Bug.Tracker.entity.Bug;
 import com.bugTracker.Bug.Tracker.entity.Project;
 import com.bugTracker.Bug.Tracker.entity.User;
+import com.bugTracker.Bug.Tracker.enums.WorkStatus;
 import com.bugTracker.Bug.Tracker.repository.BugRepository;
 import com.bugTracker.Bug.Tracker.repository.NotificationRepository;
 import com.bugTracker.Bug.Tracker.repository.ProjectRepository;
@@ -39,7 +39,7 @@ public class BugServiceImpl implements BugService {
     public String bugForUser(Model model, Principal principal) {
         User loggedUser = userRepository.findByEmail(principal.getName());
         model.addAttribute("user", loggedUser);
-        model.addAttribute("isAdmin", isAdmin(loggedUser));
+        model.addAttribute("isAdmin", Utils.isAdmin(loggedUser));
         model.addAttribute("pageTitle", "Bugs | Bug Tracker");
         model.addAttribute("isUnread", notificationRepository.isThereUnread(loggedUser.getId()) != 0);
         model.addAttribute("allBug", bugRepository.getAllBugs(loggedUser.getId()));
@@ -56,7 +56,7 @@ public class BugServiceImpl implements BugService {
         try {
             if (projectRepository.isItTheirProject(projectId, loggedUser.getId()) != null) {
                 model.addAttribute("user", loggedUser);
-                model.addAttribute("isAdmin", isAdmin(loggedUser));
+                model.addAttribute("isAdmin", Utils.isAdmin(loggedUser));
                 model.addAttribute("pageTitle", "Bugs | Bug Tracker");
                 model.addAttribute("isUnread", notificationRepository.isThereUnread(loggedUser.getId()) != 0);
 
@@ -82,7 +82,14 @@ public class BugServiceImpl implements BugService {
         Project project = projectRepository.getProjectIdByName(bug.getProjectName());
         Bug b = new Bug();
         b.setDescription(bug.getDescription());
-        b.setStatus(bug.getStatus());
+        if (bug.getStatus() == 1)
+            b.setStatus(WorkStatus.InProgress);
+        if (bug.getStatus() == 2)
+            b.setStatus(WorkStatus.Pending);
+        if (bug.getStatus() == 3)
+            b.setStatus(WorkStatus.Done);
+        if (bug.getStatus() == 5)
+            b.setStatus(WorkStatus.Cancelled);
         b.setTitle(bug.getTitle());
         b.setProjectId(project.getProjectId());
         b.setUserId(sender.getId());
@@ -108,7 +115,7 @@ public class BugServiceImpl implements BugService {
                     model.addAttribute("foundBug", bug);
 
                     model.addAttribute("user", user);
-                    model.addAttribute("isAdmin", isAdmin(user));
+                    model.addAttribute("isAdmin", Utils.isAdmin(user));
                     model.addAttribute("pageTitle", "Bug #" + bugId + " | Bug Tracker");
                     model.addAttribute("isUnread", notificationRepository.isThereUnread(user.getId()));
                     responseModel.setMessage("bug");
@@ -138,7 +145,7 @@ public class BugServiceImpl implements BugService {
                 if (bug != null) {
                     model.addAttribute("bug", bug);
                     model.addAttribute("user", user);
-                    model.addAttribute("isAdmin", isAdmin(user));
+                    model.addAttribute("isAdmin", Utils.isAdmin(user));
                     model.addAttribute("pageTitle", "Bug #" + bugId + " | Bug Tracker");
                     model.addAttribute("projects", projectRepository.getProjects(user.getId(), page));
                     model.addAttribute("isUnread", notificationRepository.isThereUnread(user.getId()));
@@ -163,7 +170,14 @@ public class BugServiceImpl implements BugService {
         Project project = projectRepository.getProjectIdByName(bug.getProjectName());
         Bug b = bugRepository.getBugById(bug.getBugId());
         b.setDescription(bug.getDescription());
-        b.setStatus(bug.getStatus());
+        if (bug.getStatus() == 1)
+            b.setStatus(WorkStatus.InProgress);
+        if (bug.getStatus() == 2)
+            b.setStatus(WorkStatus.Pending);
+        if (bug.getStatus() == 3)
+            b.setStatus(WorkStatus.Done);
+        if (bug.getStatus() == 5)
+            b.setStatus(WorkStatus.Cancelled);
         b.setTitle(bug.getTitle());
         b.setProjectId(project.getProjectId());
         b.setModifiedDate(currentServerTime);
@@ -175,23 +189,13 @@ public class BugServiceImpl implements BugService {
     public ResponseModel deleteBug(DeleteBugDto bug) {
 
         Bug b = bugRepository.getBugById(bug.getBugId());
-        b.setStatus(5);
+        b.setStatus(WorkStatus.Cancelled);
         bugRepository.save(b);
         return ResponseModel.builder().message("redirect:/bugs").status(HttpStatus.OK.value()).currentServerTime(Utils.getCurrentServerTime()).build();
     }
 
-    public boolean isAdmin(User loggedUser) {
-        boolean admin = false;
-        if (loggedUser.getRoles() != null && loggedUser.getRoles().isEmpty())
-            return false;
-        for (RolesOfUser role : loggedUser.getRoles()) {
-            if (role.getStatus() != 5 && role.getRole().equalsIgnoreCase("admin")) {
-                admin = true;
-                break;
-            }
-        }
-        return admin;
+    public long completedBugsCount(String userId) {
+        return bugRepository.getCompletedBugsCount(userId);
     }
-
 
 }

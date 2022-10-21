@@ -1,5 +1,7 @@
 package com.bugTracker.Bug.Tracker.utils;
 
+import com.bugTracker.Bug.Tracker.dto.RolesOfUser;
+import com.bugTracker.Bug.Tracker.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,5 +53,18 @@ public final class Utils {
             }
         }
         return requestUrl.toString();
+    }
+
+    public static boolean isAdmin(User loggedUser) {
+        boolean admin = false;
+        if (loggedUser.getRoles() != null && loggedUser.getRoles().isEmpty())
+            return false;
+        for (RolesOfUser role : loggedUser.getRoles()) {
+            if (role.getStatus() != 5 && role.getRole().equalsIgnoreCase("admin")) {
+                admin = true;
+                break;
+            }
+        }
+        return admin;
     }
 }

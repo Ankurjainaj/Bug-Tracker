@@ -1,5 +1,6 @@
 package com.bugTracker.Bug.Tracker.entity;
 
+import com.bugTracker.Bug.Tracker.enums.WorkStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
@@ -20,7 +21,7 @@ public class Todo {
     @Field(value = "task")
     private String task;
     @Field(value = "status")
-    private String status;
+    private WorkStatus status;
 
     public Todo() {
         todoId = new ObjectId().toString();

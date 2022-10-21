@@ -1,5 +1,6 @@
 package com.bugTracker.Bug.Tracker.entity;
 
+import com.bugTracker.Bug.Tracker.enums.WorkStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
@@ -24,7 +25,7 @@ public class Task {
     @Field(value = "description")
     private String description;
     @Field(value = "status")
-    private String status;
+    private WorkStatus status;
     @Field(value = "created_date")
     private String created;
     @Field(value = "project_name")

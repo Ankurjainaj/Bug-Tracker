@@ -1,6 +1,6 @@
 package com.bugTracker.Bug.Tracker.enums;
 
-public enum BugStatus {
+public enum WorkStatus {
 
     InProgress(1),
     Pending(2),
@@ -10,7 +10,7 @@ public enum BugStatus {
 
     private int status;
 
-    BugStatus(int status) {
+    WorkStatus(int status) {
         this.status = status;
     }
 

@@ -3,7 +3,7 @@ package com.bugTracker.Bug.Tracker.controller;
 import com.bugTracker.Bug.Tracker.dto.CreateBugDto;
 import com.bugTracker.Bug.Tracker.dto.DeleteBugDto;
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
-import com.bugTracker.Bug.Tracker.service.BugServiceImpl;
+import com.bugTracker.Bug.Tracker.service.BugService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import java.security.Principal;
 public class BugsController {
 
     @Autowired
-    private BugServiceImpl bugService;
+    private BugService bugService;
 
     @GetMapping("")
     public String bugs(Model model, Principal principal) {

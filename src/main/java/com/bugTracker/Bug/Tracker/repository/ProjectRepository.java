@@ -23,4 +23,9 @@ public interface ProjectRepository extends MongoRepository<Project, String> {
     @Query(value = "{'status':{$ne:5},'users':{$elemMatch:{'user_id':?0, 'status':{$ne:5}}}}", sort = "{'project_id':-1}")
     List<Project> getProjects(String userId, Pageable pageable);
 
+    @Query(value = "{'status':{$ne:5},'users':{$elemMatch:{'user_id':?0, 'status':{$ne:5}}}}", count = true)
+    long projectsCount(String userId);
+
+    @Query(value = "{'project_id':?0,'status':{$ne:5}}")
+    Project getProjectById(String projectId);
 }

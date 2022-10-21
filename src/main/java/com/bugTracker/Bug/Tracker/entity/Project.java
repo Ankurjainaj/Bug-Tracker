@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -34,7 +34,7 @@ public class Project {
     private Integer status = 1;
 
     @Field(value = "users")
-    private HashSet<UserInProject> users;
+    private Set<UserInProject> users;
 
     public Project() {
         projectId = new ObjectId().toString();

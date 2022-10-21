@@ -20,14 +20,17 @@ public interface BugRepository extends MongoRepository<Bug, String> {
     List<Bug> getProjectBugs(String projectId);
 
     @Query(value = "{'user_id':?0, 'status':{$ne:5}}", count = true)
-    int bugsCount(String userId);
+    long bugsCount(String userId);
 
     @Query(value = "{$and:[{'user_id':?0}, {'status':{$in:[1,2]}}]}", count = true)
-    int uncompletedBugsCount(String userId);
+    long uncompletedBugsCount(String userId);
 
     @Query(value = "{'bug_id':?0, 'status':{$ne:5}}")
     Bug getBugById(String bugId);
 
     @Query(value = "{'bug_id':?0,'user_id':?1, 'status':{$ne:5}}", count = true)
-    int isItTheirBug(String bugId, String userId);
+    long isItTheirBug(String bugId, String userId);
+
+    @Query(value = "{'user_id':?0, 'status':3}", count = true)
+    long getCompletedBugsCount(String userId);
 }
