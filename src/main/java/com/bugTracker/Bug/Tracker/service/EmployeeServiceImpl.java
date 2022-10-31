@@ -9,6 +9,7 @@ import com.bugTracker.Bug.Tracker.repository.*;
 import com.bugTracker.Bug.Tracker.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.security.Principal;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired

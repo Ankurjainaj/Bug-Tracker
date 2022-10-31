@@ -1,7 +1,6 @@
 package com.bugTracker.Bug.Tracker.service;
 
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
-import com.bugTracker.Bug.Tracker.dto.RolesOfUser;
 import com.bugTracker.Bug.Tracker.entity.Todo;
 import com.bugTracker.Bug.Tracker.entity.User;
 import com.bugTracker.Bug.Tracker.repository.*;
@@ -37,7 +36,7 @@ public class DashboardServiceImpl implements DashboardService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Override
     public ResponseModel dashboard(Model model, Principal principal) {

@@ -9,12 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
 @Builder
 @Document(value = "exception_log")
-public class ExceptionLog {
+public class ExceptionLog implements Serializable {
 
     @Id
     @Field(name = "log_id")

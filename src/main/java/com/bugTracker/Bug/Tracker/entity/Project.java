@@ -8,12 +8,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @Document(collection = "projects")
-public class Project {
+public class Project implements Serializable {
 
     @Id
     @Field(value = "project_id")

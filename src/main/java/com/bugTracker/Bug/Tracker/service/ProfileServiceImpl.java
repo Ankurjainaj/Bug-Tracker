@@ -2,7 +2,6 @@ package com.bugTracker.Bug.Tracker.service;
 
 import com.bugTracker.Bug.Tracker.dto.ChangePassword;
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
-import com.bugTracker.Bug.Tracker.dto.RolesOfUser;
 import com.bugTracker.Bug.Tracker.entity.User;
 import com.bugTracker.Bug.Tracker.repository.NotificationRepository;
 import com.bugTracker.Bug.Tracker.repository.UserRepository;

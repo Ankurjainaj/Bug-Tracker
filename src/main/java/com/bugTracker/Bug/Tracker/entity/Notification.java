@@ -7,10 +7,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @Document(collection = "notifications")
-public class Notification {
+public class Notification implements Serializable {
 
     @Id
     @Field(value = "notification_id")

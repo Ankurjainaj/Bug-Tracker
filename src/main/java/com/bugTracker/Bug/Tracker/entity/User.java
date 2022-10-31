@@ -3,17 +3,19 @@ package com.bugTracker.Bug.Tracker.entity;
 import com.bugTracker.Bug.Tracker.dto.RolesOfUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 @Data
 @AllArgsConstructor
 @Document(collection = "users")
-public class User {
+public class User implements Serializable {
 
     @Id
     @Field(value = "id")

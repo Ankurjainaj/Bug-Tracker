@@ -3,6 +3,7 @@ package com.bugTracker.Bug.Tracker.controller;
 
 import com.bugTracker.Bug.Tracker.dto.ResponseModel;
 import com.bugTracker.Bug.Tracker.service.DashboardService;
+import com.bugTracker.Bug.Tracker.service.DashboardServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
